@@ -4,42 +4,95 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class SQL {
+    private static String url = "jdbc:mysql://127.0.0.1:8889/WaitingGame";
+    private static String username = "2me";
+    private static String password = "saint123";
+    private static Connection connection;
+    private static Statement stmt;
 
-    public static void main(String[] args) {
-        String url = "jdbc:mysql://127.0.0.1:8889/DataStructuresTest";
-        String username = "2me";
-        String password = "saint123";
-        Connection connection = null;
-        try {
-            connection = DriverManager.getConnection(url,username,password);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        Statement stmt = null;
-        try {
-            stmt = connection.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        String sql = "CREATE TABLE IF NOT EXISTS `Wait-Game`.`Sessions` (\n" +
-                "  `sessionsID` INT NOT NULL,\n" +
-                "  `FK_Player` INT NULL,\n" +
-                "  `Date` DATETIME NULL,\n" +
-                "  `SessionTime` INT NULL,\n" +
-                "  PRIMARY KEY (`sessionsID`),\n" +
-                "  INDEX `FK_Player_idx` (`FK_Player` ASC) VISIBLE,\n" +
-                "  CONSTRAINT `FK_Player`\n" +
-                "    FOREIGN KEY (`FK_Player`)\n" +
-                "    REFERENCES `Wait-Game`.`Player` (`playerID`)\n" +
+    public static void main(String[] args) throws SQLException {
+        prepareSQLConnections();
+        createDatabase();
+
+    }
+
+    public static void prepareSQLConnections() throws SQLException{
+        connection = DriverManager.getConnection(url, username, password);
+        stmt = connection.createStatement();
+    }
+
+    public static void insertNewPlayer(){
+
+    }
+
+    public ArrayList<String> getAllPlayers() throws SQLException {
+        Connection connection = DriverManager.getConnection(url, username, password);
+        Statement stmt = connection.createStatement();
+        String sql = "SELECT * FROM Players WHERE";
+        stmt.execute(sql);
+        return null;
+    }
+
+    public static void createDatabase() throws SQLException {
+        createBackgroundTable();
+        createPlayerTable();
+    //    createSessionTable();
+    }
+
+    public static void createBackgroundTable() throws SQLException {
+        prepareSQLConnections();
+        String sql = "CREATE TABLE IF NOT EXISTS `Background` (\n" +
+                "  `backgroundID` INT NOT NULL,\n" +
+                "  `favColor` VARCHAR(45) NULL,\n" +
+                "  `darkModeOn` TINYINT NULL,\n" +
+                "  PRIMARY KEY (`backgroundID`),\n" +
+                "  UNIQUE INDEX `backgroundID_UNIQUE` (`backgroundID` ASC))\n" +
+                "ENGINE = InnoDB";
+        stmt.execute(sql);
+    }
+
+    public static void createPlayerTable() throws SQLException {
+        prepareSQLConnections();
+        String sql = "CREATE TABLE IF NOT EXISTS `Player` (\n" +
+                "  `playerID` INT GENERATED ALWAYS AS (),\n" +
+                "  `username` VARCHAR(45) NULL,\n" +
+                "  `hoursPlayed` INT NULL,\n" +
+                "  `minutesPlayed` INT NULL,\n" +
+                "  `SecondsPlayed` INT NULL,\n" +
+                "  `FK_Background` INT NULL,\n" +
+                "  PRIMARY KEY (`playerID`),\n" +
+                "  UNIQUE INDEX `playerID_UNIQUE` (`playerID` ASC),\n" +
+                "  UNIQUE INDEX `FK_Background_UNIQUE` (`FK_Background` ASC),\n" +
+                "  CONSTRAINT `FK_Background`\n" +
+                "    FOREIGN KEY (`FK_Background`)\n" +
+                "    REFERENCES `Wait-Game`.`Background` (`backgroundID`)\n" +
                 "    ON DELETE NO ACTION\n" +
                 "    ON UPDATE NO ACTION)\n" +
                 "ENGINE = InnoDB";
-        try {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        stmt.execute(sql);
     }
+
+    public static void createSessionTable() throws SQLException {
+        prepareSQLConnections();
+        String sql = "CREATE TABLE IF NOT EXISTS `Wait-Game`.`Sessions` (\\n\" +\n" +
+                "                \"  `sessionsID` INT NOT NULL,\\n\" +\n" +
+                "                \"  `FK_Player` INT NULL,\\n\" +\n" +
+                "                \"  `Date` DATETIME NULL,\\n\" +\n" +
+                "                \"  `SessionTime` INT NULL,\\n\" +\n" +
+                "                \"  PRIMARY KEY (`sessionsID`),\\n\" +\n" +
+                "                \"  INDEX `FK_Player_idx` (`FK_Player` ASC) ,\\n\" +\n" +
+                "                \"  CONSTRAINT `FK_Player`\\n\" +\n" +
+                "                \"    FOREIGN KEY (`FK_Player`)\\n\" +\n" +
+                "                \"    REFERENCES `Wait-Game`.`Player` (`playerID`)\\n\" +\n" +
+                "                \"    ON DELETE NO ACTION\\n\" +\n" +
+                "                \"    ON UPDATE NO ACTION)\\n\" +\n" +
+                "                \"ENGINE = InnoDB";
+        stmt.execute(sql);
+    }
+
+
+
 }
