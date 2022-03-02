@@ -37,9 +37,9 @@ public class SQL {
     }
 
     public static void createDatabase() throws SQLException {
-        createBackgroundTable();
-        createPlayerTable();
-    //    createSessionTable();
+    //    createBackgroundTable();
+        // createPlayerTable();
+        createSessionTable();
     }
 
     public static void createBackgroundTable() throws SQLException {
@@ -56,8 +56,8 @@ public class SQL {
 
     public static void createPlayerTable() throws SQLException {
         prepareSQLConnections();
-        String sql = "CREATE TABLE IF NOT EXISTS `Player` (\n" +
-                "  `playerID` INT GENERATED ALWAYS AS (),\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS `WaitingGame`.`Player` (\n" +
+                "  `playerID` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `username` VARCHAR(45) NULL,\n" +
                 "  `hoursPlayed` INT NULL,\n" +
                 "  `minutesPlayed` INT NULL,\n" +
@@ -65,10 +65,9 @@ public class SQL {
                 "  `FK_Background` INT NULL,\n" +
                 "  PRIMARY KEY (`playerID`),\n" +
                 "  UNIQUE INDEX `playerID_UNIQUE` (`playerID` ASC),\n" +
-                "  UNIQUE INDEX `FK_Background_UNIQUE` (`FK_Background` ASC),\n" +
                 "  CONSTRAINT `FK_Background`\n" +
                 "    FOREIGN KEY (`FK_Background`)\n" +
-                "    REFERENCES `Wait-Game`.`Background` (`backgroundID`)\n" +
+                "    REFERENCES `WaitingGame`.`Background` (`backgroundID`)\n" +
                 "    ON DELETE NO ACTION\n" +
                 "    ON UPDATE NO ACTION)\n" +
                 "ENGINE = InnoDB";
@@ -77,19 +76,20 @@ public class SQL {
 
     public static void createSessionTable() throws SQLException {
         prepareSQLConnections();
-        String sql = "CREATE TABLE IF NOT EXISTS `Wait-Game`.`Sessions` (\\n\" +\n" +
-                "                \"  `sessionsID` INT NOT NULL,\\n\" +\n" +
-                "                \"  `FK_Player` INT NULL,\\n\" +\n" +
-                "                \"  `Date` DATETIME NULL,\\n\" +\n" +
-                "                \"  `SessionTime` INT NULL,\\n\" +\n" +
-                "                \"  PRIMARY KEY (`sessionsID`),\\n\" +\n" +
-                "                \"  INDEX `FK_Player_idx` (`FK_Player` ASC) ,\\n\" +\n" +
-                "                \"  CONSTRAINT `FK_Player`\\n\" +\n" +
-                "                \"    FOREIGN KEY (`FK_Player`)\\n\" +\n" +
-                "                \"    REFERENCES `Wait-Game`.`Player` (`playerID`)\\n\" +\n" +
-                "                \"    ON DELETE NO ACTION\\n\" +\n" +
-                "                \"    ON UPDATE NO ACTION)\\n\" +\n" +
-                "                \"ENGINE = InnoDB";
+        String sql = "CREATE TABLE IF NOT EXISTS `Sessions` (\n" +
+                "  `sessionsID` INT NOT NULL AUTO_INCREMENT,\n" +
+                "  `FK_Player` INT NULL,\n" +
+                "  `Date` DATETIME NULL,\n" +
+                "  `SessionTime` INT NULL,\n" +
+                "  PRIMARY KEY (`sessionsID`),\n" +
+                "  INDEX `FK_Player_idx` (`FK_Player` ASC)\n" +
+                "  CONSTRAINT `FK_Player`\n" +
+                "    FOREIGN KEY (`FK_Player`)\n" +
+                "    REFERENCES `WaitingGame`.`Player` (`playerID`)\n" +
+                "    ON DELETE NO ACTION\n" +
+                "    ON UPDATE NO ACTION)\n" +
+                "ENGINE = InnoDB";
+        System.out.println(sql);
         stmt.execute(sql);
     }
 

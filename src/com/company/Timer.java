@@ -28,6 +28,16 @@ public class Timer {
         else System.out.println(":" + secondsDisplay);
     }
 
+    public void coolTimer(){
+        int currSecond = 0;
+        if (currSecond < elapsedSeconds) {
+            System.out.print("\b\b\b\b\b\b\b");
+            displayTimers();
+            currSecond = (int) elapsedSeconds;
+        }
+
+
+    }
 
     public void updateTimers(){
         elapsedTime = System.currentTimeMillis() - startTime;
