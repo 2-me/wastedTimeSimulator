@@ -14,11 +14,11 @@ public class Timer {
     }
 
     public void stop(){
-        updateTimers();
         displayTimers();
     }
 
     public void displayTimers(){
+        updateTimers();
         System.out.print(elapsedHours);
         if (elapsedMinutes < 10)
             System.out.print(":0" + elapsedMinutes);
@@ -28,12 +28,12 @@ public class Timer {
         else System.out.println(":" + secondsDisplay);
     }
 
+    long currSecond = 0;
     public void coolTimer(){
-        int currSecond = 0;
         if (currSecond < elapsedSeconds) {
-            System.out.print("\b\b\b\b\b\b\b");
             displayTimers();
-            currSecond = (int) elapsedSeconds;
+            //System.out.print("\b\b\b\b\b\b\b");
+            currSecond = elapsedSeconds;
         }
 
 
@@ -41,7 +41,7 @@ public class Timer {
 
     public void updateTimers(){
         elapsedTime = System.currentTimeMillis() - startTime;
-        elapsedSeconds = elapsedTime / 1000; // THE PROBLEM IS RIGHT HERE MISSING SEMI-COLON
+        elapsedSeconds = elapsedTime / 1000;
         secondsDisplay = elapsedSeconds % 60;
         elapsedMinutes = elapsedSeconds / 60;
         elapsedHours = elapsedMinutes / 60;

@@ -11,11 +11,11 @@ public class SQL {
     private static String username = "2me";
     private static String password = "saint123";
     private static Connection connection;
-    private static Statement stmt;
+    public static Statement stmt;
 
     public static void main(String[] args) throws SQLException {
         prepareSQLConnections();
-        createDatabase();
+        //createDatabase();
 
     }
 
@@ -37,8 +37,8 @@ public class SQL {
     }
 
     public static void createDatabase() throws SQLException {
-    //    createBackgroundTable();
-        // createPlayerTable();
+        createBackgroundTable();
+        createPlayerTable();
         createSessionTable();
     }
 
@@ -76,20 +76,19 @@ public class SQL {
 
     public static void createSessionTable() throws SQLException {
         prepareSQLConnections();
-        String sql = "CREATE TABLE IF NOT EXISTS `Sessions` (\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS `WaitingGame`.`Sessions` (\n" +
                 "  `sessionsID` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `FK_Player` INT NULL,\n" +
                 "  `Date` DATETIME NULL,\n" +
                 "  `SessionTime` INT NULL,\n" +
                 "  PRIMARY KEY (`sessionsID`),\n" +
-                "  INDEX `FK_Player_idx` (`FK_Player` ASC)\n" +
+                "  INDEX `FK_Player_idx` (`FK_Player` ASC), \n" +
                 "  CONSTRAINT `FK_Player`\n" +
                 "    FOREIGN KEY (`FK_Player`)\n" +
                 "    REFERENCES `WaitingGame`.`Player` (`playerID`)\n" +
                 "    ON DELETE NO ACTION\n" +
                 "    ON UPDATE NO ACTION)\n" +
                 "ENGINE = InnoDB";
-        System.out.println(sql);
         stmt.execute(sql);
     }
 
