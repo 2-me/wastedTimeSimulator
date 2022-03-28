@@ -2,6 +2,8 @@ package com.company;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -15,6 +17,7 @@ public class game {
     public int darkMode;
     public int backgroundID;
     public int playerID;
+    public int sessionsID;
     public int timerSeconds;
     String input = "";
     Scanner scanner = new Scanner(System.in);
@@ -44,25 +47,90 @@ public class game {
                 }
             }
         }
-
-
-
+        System.out.println("In this game you will be prompted if you would like to willingly waste your time.");
+        System.out.println("once the time has started all it takes is you to return any thing back to the console");
+        System.out.println("Then your done. Good Luck [" + Color.WHITE + "PS: there are high scores" + Color.RESET + "]");
         System.out.println("Would you like to start your waiting? (y or n)");
         theGame();
         System.out.print("Congrats ");
         favColorPrint(favColor,username);
         System.out.println("!");
-        System.out.println("Your Total Seconds Wasted (TSW) has been updated");
+        System.out.print("Your Total Seconds Wasted (TSW) has been updated to ");
         updatePlayerSeconds();
         documentSession();
+        isHighscore();
         System.out.print("See you next time ");
         favColorPrint(favColor,":)");
     }
 
+    public void isHighscore() throws SQLException {
+        int existingHSSessionID = 0;
+        int existingHighScore = 0;
+        prepareSQLConnections();
+        if (existingScores()) {
+            existingHSSessionID = result.getInt("sessionFK");
+            sql = "SELECT * FROM sessions \n" +
+                    "WHERE sessionsID='"+existingHSSessionID+"';";
+            result = stmt.executeQuery(sql);
+            if(result.next()){
+                existingHighScore = result.getInt("SessionTime");
+            }
+            if (existingHighScore < timerSeconds) {
+                sql = "DELETE FROM highscore WHERE playerFK='"+ playerID +"' AND sessionFK='"+ existingHSSessionID +"';";
+                stmt.execute(sql);
+                sql = "INSERT INTO `highscore` (`highscoreID`, `playerFK`, `sessionFK`) VALUES (NULL, '"+ playerID +"', '" + sessionsID + "')";
+                stmt.execute(sql);
+            }
+        } else {
+            sql = "INSERT INTO `highscore` (`highscoreID`, `playerFK`, `sessionFK`) VALUES (NULL, '"+ playerID +"', '" + sessionsID + "')";
+            stmt.execute(sql);
+        }
+    }
+
+    public boolean existingScores() throws SQLException {
+        prepareSQLConnections();
+        sql = "SELECT * FROM highscore \n" +
+                "WHERE playerFK='"+playerID+"';";
+        result = stmt.executeQuery(sql);
+        if(result.next()){ //existing score
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public void documentSession() throws SQLException {
         prepareSQLConnections();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+        Timestamp ts = Timestamp.from(Instant.now());
         sql = "INSERT INTO `sessions` (`sessionsID`, `FK_Player`, `Date`, `SessionTime`) VALUES (NULL, '"+playerID+"', CURRENT_TIMESTAMP, '"+timerSeconds+"')";
         stmt.execute(sql);
+        sql = "SELECT * FROM sessions \n" +
+                "WHERE FK_Player='"+playerID+"' AND SessionTime='"+timerSeconds+"';";
+        result = stmt.executeQuery(sql);
+        if(result.next()){
+            sessionsID = result.getInt("sessionsID");
+        }
+    }
+
+    public void favColorPrint(String favColor, int number){
+        String print = Integer.toString(number);
+        if (favColor.equals("WHITE"))
+            System.out.print(Color.WHITE_BOLD + print + Color.RESET);
+        if (favColor.equals("RED"))
+            System.out.print(Color.RED_BOLD + print + Color.RESET);
+        if (favColor.equals("YELLOW"))
+            System.out.print(Color.YELLOW_BOLD + print + Color.RESET);
+        if (favColor.equals("GREEN"))
+            System.out.print(Color.GREEN_BOLD + print + Color.RESET);
+        if (favColor.equals("CYAN"))
+            System.out.print(Color.CYAN_BOLD + print + Color.RESET);
+        if (favColor.equals("BLUE"))
+            System.out.print(Color.BLUE_BOLD + print + Color.RESET);
+        if (favColor.equals("PURPLE"))
+            System.out.print(Color.PURPLE_BOLD + print + Color.RESET);
+        if (favColor.equals("BLACK"))
+            System.out.print(Color.BLACK_BOLD + print + Color.RESET);
     }
 
     public void favColorPrint(String favColor, String print){
@@ -156,6 +224,16 @@ public class game {
                 "SET hoursPlayed = '"+ newTimerHours +"', minutesPlayed= '"+ newTimerMinutes +"', SecondsPlayed= '"+ newTimerSeconds +"' \n" +
                 "WHERE playerID = "+playerID+";";
         stmt.execute(sql);
+        int newTotal = (newTimerHours*3600 + newTimerMinutes*60 + newTimerSeconds);
+        favColorPrint(favColor,newTotal);
+        System.out.println();
+        System.out.print("Totaling in ");
+        favColorPrint(favColor,newTimerHours);
+        System.out.print(" Hours ");
+        favColorPrint(favColor,newTimerMinutes);
+        System.out.print(" Minutes ");
+        favColorPrint(favColor,newTimerSeconds);
+        System.out.println(" Seconds");
     }
 
     public void theGame(){
@@ -167,7 +245,9 @@ public class game {
             input = scanner.nextLine();
             while (true) {
                 if (!input.equals("")) {
+                    System.out.println(Color.WHITE_BOLD_BRIGHT + "____________");
                     timer.stop();
+                    System.out.print(Color.RESET);
                     timerSeconds = timer.getSeconds();
                     break;
                 }
@@ -219,19 +299,4 @@ public class game {
         }
     }
 
-
-    public void playBasic() {
-        String input = "";
-        Timer timer = new Timer();
-        Scanner scanner = new Scanner(System.in);
-        timer.start();
-        input = scanner.nextLine();
-        while (true) {
-            timer.coolTimer();
-            if (!input.equals("")) {
-                timer.stop();
-                break;
-            }
-        }
-    }
 }

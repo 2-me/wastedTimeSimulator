@@ -40,6 +40,7 @@ public class SQL {
         createBackgroundTable();
         createPlayerTable();
         createSessionTable();
+        //createHighScoreTable(); need help on turning it into code but it works for me. I will explain when I see you Monday, if I remember
     }
 
     public static void createBackgroundTable() throws SQLException {
@@ -92,6 +93,17 @@ public class SQL {
         stmt.execute(sql);
     }
 
-
+    public static void createHighScoreTable() throws SQLException {
+        prepareSQLConnections();
+        String sql = "CREATE TABLE IF NOT EXISTS `Wait-Game`.`highscore` (\n" +
+                "  `highscoreID` INT NOT NULL AUTO_INCREMENT,\n" +
+                "  `playerFK` VARCHAR(45) NULL,\n" +
+                "  `sessionFK` VARCHAR(45) NULL,\n" +
+                "  PRIMARY KEY (`highscoreID`),\n" +
+                "  UNIQUE INDEX `playerFK_UNIQUE` (`playerFK` ASC) VISIBLE,\n" +
+                "  UNIQUE INDEX `sessionFK_UNIQUE` (`sessionFK` ASC) VISIBLE)\n" +
+                "ENGINE = InnoDB";
+        stmt.execute(sql);
+    }
 
 }
