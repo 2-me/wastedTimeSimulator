@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class SQL {
-    private static String url = "jdbc:mysql://192.168.7.92:3306/WaitingGame";
+    private static String url = "jdbc:mysql://127.0.0.1:8889/WaitingGame"; //192.168.7.92:3306
     private static String username = "2me";
     private static String password = "saint123";
     private static Connection connection;
@@ -77,8 +77,8 @@ public class SQL {
 
     public static void createSessionTable() throws SQLException {
         prepareSQLConnections();
-        String sql = "CREATE TABLE IF NOT EXISTS `WaitingGame`.`Sessions` (\n" +
-                "  `sessionsID` INT NOT NULL AUTO_INCREMENT,\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS `WaitingGame`.`sessions` (\n" +
+                "  `sessionID` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `FK_Player` INT NULL,\n" +
                 "  `Date` DATETIME NULL,\n" +
                 "  `SessionTime` INT NULL,\n" +
@@ -95,7 +95,7 @@ public class SQL {
 
     public static void createHighScoreTable() throws SQLException {
         prepareSQLConnections();
-        String sql = "CREATE TABLE IF NOT EXISTS `Wait-Game`.`highscore` (\n" +
+        String sql = "CREATE TABLE IF NOT EXISTS `WaitingGame`.`highscore` (\n" +
                 "  `highscoreID` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `playerFK` VARCHAR(45) NULL,\n" +
                 "  `sessionFK` VARCHAR(45) NULL,\n" +
