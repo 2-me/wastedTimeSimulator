@@ -7,7 +7,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class SQL {
-    private static String url = "jdbc:mysql://127.0.0.1:8889/WaitingGame";
+    private static String url = "jdbc:mysql://192.168.7.92:3306/WaitingGame";
     private static String username = "2me";
     private static String password = "saint123";
     private static Connection connection;
@@ -15,7 +15,7 @@ public class SQL {
 
     public static void main(String[] args) throws SQLException {
         prepareSQLConnections();
-        //createDatabase();
+        createDatabase();
 
     }
 
@@ -45,7 +45,7 @@ public class SQL {
     public static void createBackgroundTable() throws SQLException {
         prepareSQLConnections();
         String sql = "CREATE TABLE IF NOT EXISTS `Background` (\n" +
-                "  `backgroundID` INT NOT NULL,\n" +
+                "  `backgroundID` INT NOT NULL AUTO_INCREMENT,\n" +
                 "  `favColor` VARCHAR(45) NULL,\n" +
                 "  `darkModeOn` TINYINT NULL,\n" +
                 "  PRIMARY KEY (`backgroundID`),\n" +

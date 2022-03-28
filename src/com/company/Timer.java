@@ -39,6 +39,11 @@ public class Timer {
 
     }
 
+    public int getSeconds(){
+        updateTimers();
+        return (int) elapsedSeconds;
+    }
+
     public void updateTimers(){
         elapsedTime = System.currentTimeMillis() - startTime;
         elapsedSeconds = elapsedTime / 1000;
